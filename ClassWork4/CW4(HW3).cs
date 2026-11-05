@@ -40,24 +40,24 @@ class Character
         target.TakeDamage(power);
         Console.WriteLine($"{name} атакует {target.name} на {power}");
     }
-    public void GetStatus()
+    public virtual string ToString()
     {
-        Console.WriteLine($"{Name}, {Hp}");
+        return $"{Name} (HP: {Hp})";
     }
-    public static int HowMany()
+    public virtual static int HowMany()
     {
         return count;
     }
-    public static bool IsValidStatus(int hp, int power)
+    public virtual static bool IsValidStatus(int hp, int power)
     {
         return hp > 0 && power > 0;
     }
-    public int TakeDamage(int damage)
+    public virtual int TakeDamage(int damage)
     {
         this.hp -= damage;
         return hp;
     }
-    public bool IsAlive()
+    public virtual bool IsAlive()
     {
         return hp > 0;
     }
@@ -94,16 +94,32 @@ class Program
 {
     static void Main()
     {
-        list<Character> characters = new list<Character>
-        { 
-            new Player("Poli", 100, 5);
-            new Enemy("Varya S", 16, 23);
-        }
-        while(characters.IsAlive())
+        List<Character> characters = new List<Character>
         {
-            characters.Attack()
+            new Player("Poli", 100, 5),
+            new Enemy("Varya S", 16, 23)
+        };
+        Character p1 = characters[0];
+        Character e1 = characters[1];
+        while (p1.IsAlive() && e1.IsAlive())
+        {
+            p1.Attack(e1);
+            Console.WriteLine(e1);
+            if (!e1.IsAlive())
+            {
+                Console.WriteLine($"{e1} побеждён! {p1} выиграл.");
+                break;
+            }
+            e1.Attack(p1);
+            Console.WriteLine(p1);
+            if (!p1.IsAlive())
+            {
+                Console.WriteLine($"{p1} побеждён! {e1} выиграл.");
+                break;
+            }
         }
         Console.WriteLine(Character.HowMany());
         Console.WriteLine(Character.IsValidStatus(0, 55));
     }
 }
+
